@@ -4,14 +4,14 @@ const main = async () => {
   const gameContract = await gameContractFactory.deploy(
     ['MAGIC GHOST', 'HUNGRYTIGER', 'FUN GHOST'], // name
     [
-      'https://lh3.googleusercontent.com/ZJH91320EmRzo4ERs9hntz-_sjmm9T_2OGbxi5TlGVfdDuHyi0ppbrqHb2gRCuI2tLRQ0OxWLxEYgvZfnRLoICPbS85jkvqG2tdBtqY=w600',
-      'https://lh3.googleusercontent.com/cOhJTa6eGdZX9p66A_sn-TOlO6CbAdg3XtW0zl1wAVVWK1Kb-FyDlnfnWChgbrnumSbFXuhFYxrsKrN_N4OoIxRrSX0774fC7sJtpns=w600',
-      'https://lh3.googleusercontent.com/pYcxo3P7u9uzwvO-sDCtCfXvD2gnJ1R0YcpG61tgpJr9T-01kii44P4i4yodAfzSrww1HDTgEwktrMUnk2zvtFYxfPJ1-fn6WUbq0Q=w600',
+      'QmdzHEPiZaQzxLiZUqNJz2FcAtBcQZBJYwhQoqiECLhvPX',
+      'QmQ1UMzvxnT29Yhnnk6fPd6fa8RF3pFKKwwDJ6JYrB4eSD',
+      'QmTv7bv5HAGo4iu9r6ecHi2mv7APsREosomSrjGE1KU8wu',
     ], // image
     [100, 200, 300], // hp
     [100, 50, 25], // attack
     'SkullBoss', // Boss name
-    'https://lh3.googleusercontent.com/BgV3kMvoZ5JPjTT-n3cDMdUA7f8zhp3oonWoR4TL4koDcF5mCC7UlFP_C1G2kPaOjiOjAGuV6eL_FMDaLmmVdJmLHBRHnhsPAEzvKQ=w600', // Boss image
+    'QmZU5inBKzotoU3xXPV8fc93YnniYsSaGu5iuK7VLqKCMR', // Boss image
     10000, // Boss hp
     50, // Boss attack
   );
