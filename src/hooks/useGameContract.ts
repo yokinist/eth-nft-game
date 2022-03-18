@@ -56,8 +56,10 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
       try {
         console.info('Minting character in progress...');
         const mintTxn = await gameContract.mintCharacterNFT(characterId);
+        setMining(true);
         await mintTxn.wait();
         console.info('mintTxn:', mintTxn);
+        setMining(false);
       } catch (error) {
         console.warn('MintCharacterAction Error:', error);
       }

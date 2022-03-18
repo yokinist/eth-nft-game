@@ -11,6 +11,7 @@ const Page: React.VFC<Props> = ({}) => {
 
   const {
     isLoading,
+    mining,
     boss,
     attackState,
     runAttackAction,
@@ -21,6 +22,8 @@ const Page: React.VFC<Props> = ({}) => {
   } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
+
+  console.debug({ mining });
 
   const renderSomethingBeforeConnectWallet = () => {
     return (
@@ -42,7 +45,7 @@ const Page: React.VFC<Props> = ({}) => {
   if (isLoading) {
     return (
       <Layout>
-        <Spinner loading />
+        <Spinner loading theme="screen" />
       </Layout>
     );
   }
@@ -60,6 +63,7 @@ const Page: React.VFC<Props> = ({}) => {
             />
           ) : (
             <SelectCharacter
+              mining={mining}
               handleSetCharacterNFT={handleSetCharacterNFT}
               allCharacters={allCharacters}
               mintCharacterNFTAction={mintCharacterNFTAction}
