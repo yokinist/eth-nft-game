@@ -4,13 +4,14 @@ import { SpinnerCircular } from 'spinners-react';
 
 type Props = {
   loading: boolean;
-  theme?: 'screen' | 'default';
+  theme?: 'screen' | 'default' | 'inline';
 };
 
 export const Spinner: React.VFC<Props> = ({ loading, theme = 'screen' }) => (
   <div
     className={classNames('w-full', 'h-full', 'flex', 'items-center', 'justify-center', 'flex-col', {
       'min-h-screen': theme === 'screen',
+      'inline-block': theme === 'inline',
     })}
   >
     <SpinnerCircular

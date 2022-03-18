@@ -17,6 +17,7 @@ type AttackState = 'attacking' | 'hit' | '';
 type ReturnUseWaveContract = {
   isLoading: boolean;
   mining: boolean;
+  showToast: boolean;
   attackState: AttackState;
   boss: FormattedCharacterType;
   allCharacters: FormattedCharacterType[];
@@ -30,6 +31,8 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   const [boss, setBoss] = useState<FormattedCharacterType>(null);
   const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
+
+  const [showToast, setShowToast] = useState<boolean>(false);
 
   const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -76,6 +79,11 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
       await attackTxn.wait();
       console.info('attackTxn:', attackTxn);
       setAttackState('hit');
+      // 攻撃ダメージの表示をtrueに設定し（表示）、5秒後にfalseに設定する（非表示）
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
     } catch (error) {
       console.error('Error attacking boss:', error);
       setAttackState('');
@@ -179,6 +187,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   return {
     isLoading,
     mining,
+    showToast,
     attackState,
     boss,
     allCharacters,

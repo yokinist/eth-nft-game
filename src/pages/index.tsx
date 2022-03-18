@@ -12,6 +12,7 @@ const Page: React.VFC<Props> = ({}) => {
   const {
     isLoading,
     mining,
+    showToast,
     boss,
     attackState,
     runAttackAction,
@@ -56,6 +57,7 @@ const Page: React.VFC<Props> = ({}) => {
         <div className="flex items-center">
           {characterNFT ? (
             <Arena
+              showToast={showToast}
               characterNFT={characterNFT}
               boss={boss}
               attackState={attackState}
