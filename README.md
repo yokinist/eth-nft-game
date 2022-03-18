@@ -1,4 +1,4 @@
-# dApp-boilerplate
+# eth-nft-game
 
 ## Tech Stack
 
