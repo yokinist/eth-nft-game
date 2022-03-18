@@ -1,14 +1,31 @@
+// deploy.js
 const main = async () => {
-  const [deployer] = await hre.ethers.getSigners();
-  const accountBalance = await deployer.getBalance();
+  const gameContractFactory = await hre.ethers.getContractFactory('EpicGame');
+  const gameContract = await gameContractFactory.deploy(
+    ['FUSHIGIDANE', 'HITOKAGE', 'ZENIGAME'],
+    ['https://i.imgur.com/IjX49Yf.png', 'https://i.imgur.com/Xid5qaC.png', 'https://i.imgur.com/kW2dNCs.png'],
+    [100, 200, 300],
+    [100, 50, 25],
+  );
 
-  const waveFactory = await hre.ethers.getContractFactory('Wave');
-  const waveContract = await waveFactory.deploy();
-  await waveContract.deployed();
+  const nftGame = await gameContract.deployed();
 
-  console.info('Deploying contracts with account: ', deployer.address);
-  console.info('Account balance: ', accountBalance.toString());
-  console.info('Contract deployed to:', waveContract.address);
+  console.info('Contract deployed to:', nftGame.address);
+
+  let txn;
+  txn = await gameContract.mintCharacterNFT(0);
+  await txn.wait();
+  console.info('Minted NFT #1');
+
+  txn = await gameContract.mintCharacterNFT(1);
+  await txn.wait();
+  console.info('Minted NFT #2');
+
+  txn = await gameContract.mintCharacterNFT(2);
+  await txn.wait();
+  console.info('Minted NFT #3');
+
+  console.info('Done deploying and minting!');
 };
 
 const runMain = async () => {
@@ -16,7 +33,7 @@ const runMain = async () => {
     await main();
     process.exit(0);
   } catch (error) {
-    console.error(error);
+    console.info(error);
     process.exit(1);
   }
 };

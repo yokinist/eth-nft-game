@@ -1,26 +1,25 @@
 const main = async () => {
-  const [owner, randomPerson] = await hre.ethers.getSigners();
-  const waveFactory = await hre.ethers.getContractFactory('Wave');
-  const waveContract = await waveFactory.deploy();
-  await waveContract.deployed();
+  const gameContractFactory = await hre.ethers.getContractFactory('EpicGame');
+  const gameContract = await gameContractFactory.deploy(
+    ['FUSHIGIDANE', 'HITOKAGE', 'ZENIGAME'], // 名前
+    [
+      'https://i.imgur.com/IjX49Yf.png', // 画像
+      'https://i.imgur.com/Xid5qaC.png',
+      'https://i.imgur.com/kW2dNCs.png',
+    ],
+    [100, 200, 300], // HP
+    [100, 50, 25], // 攻撃力
+  );
+  await gameContract.deployed();
+  console.info('Contract deployed to:', gameContract.address);
+  let txn;
+  txn = await gameContract.mintCharacterNFT(2);
+  await txn.wait();
 
-  console.info('Contract deployed to:', waveContract.address);
-  console.info('Contract deployed by:', owner.address);
-
-  let waveCount;
-  waveCount = await waveContract.getTotalWaves();
-
-  let waveTxn = await waveContract.wave();
-  await waveTxn.wait();
-
-  waveCount = await waveContract.getTotalWaves();
-
-  waveTxn = await waveContract.connect(randomPerson).wave();
-  await waveTxn.wait();
-
-  waveCount = await waveContract.getTotalWaves();
+  // NFTのURIの値を取得
+  let returnedTokenUri = await gameContract.tokenURI(1);
+  console.info('Token URI:', returnedTokenUri);
 };
-
 const runMain = async () => {
   try {
     await main();
@@ -30,5 +29,4 @@ const runMain = async () => {
     process.exit(1);
   }
 };
-
 runMain();
