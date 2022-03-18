@@ -2,10 +2,14 @@
 const main = async () => {
   const gameContractFactory = await hre.ethers.getContractFactory('EpicGame');
   const gameContract = await gameContractFactory.deploy(
-    ['FUSHIGIDANE', 'HITOKAGE', 'ZENIGAME'],
-    ['https://i.imgur.com/IjX49Yf.png', 'https://i.imgur.com/Xid5qaC.png', 'https://i.imgur.com/kW2dNCs.png'],
-    [100, 200, 300],
-    [100, 50, 25],
+    ['FUSHIGIDANE', 'HITOKAGE', 'ZENIGAME'], // name
+    ['https://i.imgur.com/IjX49Yf.png', 'https://i.imgur.com/Xid5qaC.png', 'https://i.imgur.com/kW2dNCs.png'], // image
+    [100, 200, 300], // hp
+    [100, 50, 25], // attack
+    'MYU2', // Boss name
+    'https://i.imgur.com/3Ikh51a.png', // Boss image
+    10000, // Boss hp
+    50, // Boss attack
   );
 
   const nftGame = await gameContract.deployed();
@@ -13,19 +17,16 @@ const main = async () => {
   console.info('Contract deployed to:', nftGame.address);
 
   let txn;
-  txn = await gameContract.mintCharacterNFT(0);
-  await txn.wait();
-  console.info('Minted NFT #1');
-
-  txn = await gameContract.mintCharacterNFT(1);
-  await txn.wait();
-  console.info('Minted NFT #2');
 
   txn = await gameContract.mintCharacterNFT(2);
   await txn.wait();
-  console.info('Minted NFT #3');
-
-  console.info('Done deploying and minting!');
+  txn = await gameContract.attackBoss();
+  await txn.wait();
+  console.debug('First attack.');
+  txn = await gameContract.attackBoss();
+  await txn.wait();
+  console.debug('Second attack.');
+  console.debug('Done!');
 };
 
 const runMain = async () => {
