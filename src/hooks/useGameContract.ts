@@ -16,6 +16,7 @@ type ReturnUseWaveContract = {
   mining: boolean;
   allCharacters: FormattedCharacterType[];
   characterNFT: FormattedCharacterType;
+  mintCharacterNFTAction: (characterId: number) => void;
   handleSetCharacterNFT: (nextVal: FormattedCharacterType) => void;
 };
 
@@ -39,6 +40,22 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     setCharacterNFT(nextVal);
   };
 
+  const mintCharacterNFTAction = useCallback(
+    (characterId: number) => async () => {
+      console.debug({ characterId });
+      if (!gameContract) return;
+      try {
+        console.info('Minting character in progress...');
+        const mintTxn = await gameContract.mintCharacterNFT(characterId);
+        await mintTxn.wait();
+        console.info('mintTxn:', mintTxn);
+      } catch (error) {
+        console.warn('MintCharacterAction Error:', error);
+      }
+    },
+    [gameContract],
+  );
+
   const getCharacters = useCallback(async (gameContract: ethers.Contract) => {
     if (!gameContract) return;
     try {
@@ -56,6 +73,28 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     }
   }, []);
 
+  // イベントを受信したときに起動するコールバックメソッド onCharacterMint を追加します。
+  const onCharacterMint = useCallback(
+    async (sender: any, tokenId: any, characterIndex: any) => {
+      if (!gameContract) return;
+      console.debug({ sender });
+      console.debug({ tokenId });
+      console.debug({ characterIndex });
+      console.info(
+        `CharacterNFTMinted - sender: ${sender} tokenId: ${tokenId.toNumber()} characterIndex: ${characterIndex.toNumber()}`,
+      );
+      const characterNFT = await gameContract.checkIfUserHasNFT();
+      console.info('CharacterNFT: ', characterNFT);
+      setCharacterNFT(formatCharacterData(characterNFT));
+      alert(
+        `NFT キャラクーが Mint されました -- リンクはこちらです: https://rinkeby.rarible.com/token/${
+          gameContract.address
+        }:${tokenId.toNumber()}?tab=details`,
+      );
+    },
+    [gameContract],
+  );
+
   const fetchNFTMetadata = useCallback(async (gameContract: ethers.Contract) => {
     const txn = await gameContract.checkIfUserHasNFT();
     if (txn.name) {
@@ -70,6 +109,10 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     if (!gameContract || !enable) return;
     fetchNFTMetadata(gameContract);
     getCharacters(gameContract);
+    gameContract.on('CharacterNFTMinted', onCharacterMint);
+    return () => {
+      gameContract.off('CharacterNFTMinted', onCharacterMint);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameContract, enable]);
 
@@ -77,6 +120,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     allCharacters,
     mining,
     characterNFT,
+    mintCharacterNFTAction,
     handleSetCharacterNFT,
   };
 };

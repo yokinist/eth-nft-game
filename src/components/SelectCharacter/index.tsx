@@ -1,8 +1,11 @@
 import { useGameContract } from '@/hooks';
 
-type Props = Pick<ReturnType<typeof useGameContract>, 'allCharacters' | 'handleSetCharacterNFT'>;
+type Props = Pick<
+  ReturnType<typeof useGameContract>,
+  'allCharacters' | 'handleSetCharacterNFT' | 'mintCharacterNFTAction'
+>;
 
-export const SelectCharacter: React.VFC<Props> = ({ allCharacters }) => {
+export const SelectCharacter: React.VFC<Props> = ({ allCharacters, mintCharacterNFTAction }) => {
   const renderCharacters = () =>
     allCharacters.map((character, index) => (
       <div className="character-item" key={character?.name}>
@@ -13,7 +16,8 @@ export const SelectCharacter: React.VFC<Props> = ({ allCharacters }) => {
         <button
           type="button"
           className="character-mint-button"
-          //onClick={mintCharacterNFTAction(index)}
+          // @ts-ignore
+          onClick={mintCharacterNFTAction(index)}
         >{`Mint ${character?.name}`}</button>
       </div>
     ));

@@ -9,7 +9,7 @@ type Props = {
 const Page: React.VFC<Props> = ({}) => {
   const { currentAccount, isRinkebyTestNetwork, connectWallet } = useWallet();
 
-  const { allCharacters, handleSetCharacterNFT } = useGameContract({
+  const { allCharacters, handleSetCharacterNFT, mintCharacterNFTAction } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
 
@@ -28,7 +28,11 @@ const Page: React.VFC<Props> = ({}) => {
           <p>Please Switch Rinkeby Test Network</p>
         ) : (
           <>
-            <SelectCharacter handleSetCharacterNFT={handleSetCharacterNFT} allCharacters={allCharacters} />
+            <SelectCharacter
+              handleSetCharacterNFT={handleSetCharacterNFT}
+              allCharacters={allCharacters}
+              mintCharacterNFTAction={mintCharacterNFTAction}
+            />
           </>
         )}
       </div>
