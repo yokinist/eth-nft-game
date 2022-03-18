@@ -1,3 +1,4 @@
+import { IPFS_BASE_URL } from '@/constants';
 import { useGameContract } from '@/hooks';
 import { Spinner } from '@/shared';
 
@@ -13,7 +14,7 @@ export const SelectCharacter: React.VFC<Props> = ({ mining, allCharacters, mintC
         <div className="name-container">
           <p>{character?.name}</p>
         </div>
-        <img src={character?.imageURI} alt={character?.name} />
+        <img src={`${IPFS_BASE_URL}/${character?.imageURI}`} alt={character?.name} />
         <button
           type="button"
           className="character-mint-button"

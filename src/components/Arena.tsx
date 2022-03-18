@@ -1,3 +1,4 @@
+import { IPFS_BASE_URL } from '@/constants';
 import { useGameContract } from '@/hooks';
 import { Spinner } from '@/shared';
 
@@ -21,7 +22,7 @@ export const Arena: React.VFC<Props> = ({ boss, showToast, characterNFT, attackS
           <div className={`boss-content ${attackState}`}>
             <h2>🔥 {boss.name} 🔥</h2>
             <div className="image-content">
-              <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
+              <img src={`${IPFS_BASE_URL}/${boss.imageURI}`} alt={`Boss ${boss.name}`} />
               <div className="health-bar">
                 <progress value={boss.hp} max={boss.maxHp} />
                 <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
@@ -48,7 +49,7 @@ export const Arena: React.VFC<Props> = ({ boss, showToast, characterNFT, attackS
           <div className="player">
             <div className="image-content">
               <h2>{characterNFT?.name}</h2>
-              <img src={characterNFT?.imageURI} alt={`Character ${characterNFT?.name}`} />
+              <img src={`${IPFS_BASE_URL}/${characterNFT?.imageURI}`} alt={`Character ${characterNFT?.name}`} />
               <div className="health-bar">
                 <progress value={characterNFT?.hp} max={characterNFT?.maxHp} />
                 <p>{`${characterNFT?.hp} / ${characterNFT?.maxHp} HP`}</p>
