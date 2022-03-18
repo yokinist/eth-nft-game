@@ -53,7 +53,7 @@ contract EpicGame is ERC721 {
         string memory bossImageURI,
         uint bossHp,
         uint bossAttackDamage
-    ) ERC721("Pokemons", "POKEMON") {
+    ) ERC721("Ghost Battle", "GHB") {
         bigBoss = BigBoss({
             name: bossName,
             imageURI: bossImageURI,

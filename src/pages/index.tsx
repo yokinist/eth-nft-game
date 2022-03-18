@@ -1,6 +1,6 @@
 import { Arena, SelectCharacter } from '@/components';
 import { useWallet, useGameContract } from '@/hooks';
-import { Button, Layout } from '@/shared';
+import { Button, Layout, Spinner } from '@/shared';
 
 type Props = {
   //
@@ -10,6 +10,7 @@ const Page: React.VFC<Props> = ({}) => {
   const { currentAccount, isRinkebyTestNetwork, connectWallet } = useWallet();
 
   const {
+    isLoading,
     boss,
     attackState,
     runAttackAction,
@@ -37,6 +38,14 @@ const Page: React.VFC<Props> = ({}) => {
         <p>Please Switch Rinkeby Test Network</p>
       </Layout>
     );
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <Spinner loading />
+      </Layout>
+    );
+  }
 
   return (
     <>

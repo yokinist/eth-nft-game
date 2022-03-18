@@ -15,6 +15,7 @@ type Props = {
 
 type AttackState = 'attacking' | 'hit' | '';
 type ReturnUseWaveContract = {
+  isLoading: boolean;
   mining: boolean;
   attackState: AttackState;
   boss: FormattedCharacterType;
@@ -31,7 +32,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
 
   const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('');
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mining, setMining] = useState<boolean>(false);
   const ethereum = getEthereumSafety();
 
@@ -143,6 +144,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     } else {
       console.info('No character NFT found');
     }
+    setIsLoading(false);
   }, []);
 
   const fetchBoss = useCallback(async (gameContract: ethers.Contract) => {
@@ -161,6 +163,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
 
   useEffect(() => {
     if (!gameContract || !enable) return;
+    setIsLoading(true);
     fetchNFTMetadata(gameContract);
     getCharacters(gameContract);
     fetchBoss(gameContract);
@@ -172,6 +175,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   }, [gameContract, enable]);
 
   return {
+    isLoading,
     mining,
     attackState,
     boss,

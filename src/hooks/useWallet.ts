@@ -13,6 +13,7 @@ export const useWallet = (): ReturnUseWallet => {
   const [currentAccount, setCurrentAccount] = useState<string>();
   const [currentChainId, setCurrentChainId] = useState<string>();
   const [isRinkebyTestNetwork, setRinkebyTestNetwork] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const ethereum = getEthereumSafety();
 
   const handleSetAccount = useCallback((accounts: unknown) => {
@@ -61,7 +62,10 @@ export const useWallet = (): ReturnUseWallet => {
   }, [currentChainId]);
 
   useEffect(() => {
-    if (!ethereum || !ethereum?.on) return;
+    if (!ethereum || !ethereum?.on) {
+      alert('Get MetaMask');
+      return;
+    }
     checkIfWalletIsConnected();
     ethereum.on('chainChanged', handleChainChanged);
     return () => {
