@@ -1,15 +1,14 @@
 import { useGameContract } from '@/hooks';
 
-type Props = Pick<ReturnType<typeof useGameContract>, 'characterNFT' | 'boss'>;
+type Props = Pick<ReturnType<typeof useGameContract>, 'characterNFT' | 'boss' | 'attackState' | 'runAttackAction'>;
 
-export const Arena: React.VFC<Props> = ({ boss, characterNFT }) => {
-  const runAttackAction = async () => {};
+export const Arena: React.VFC<Props> = ({ boss, characterNFT, attackState, runAttackAction }) => {
   return (
     <div>
       {/* ボス */}
       {boss && (
         <div className="boss-container">
-          <div className={`boss-content`}>
+          <div className={`boss-content ${attackState}`}>
             <h2>🔥 {boss.name} 🔥</h2>
             <div className="image-content">
               <img src={boss.imageURI} alt={`Boss ${boss.name}`} />

@@ -9,7 +9,15 @@ type Props = {
 const Page: React.VFC<Props> = ({}) => {
   const { currentAccount, isRinkebyTestNetwork, connectWallet } = useWallet();
 
-  const { boss, characterNFT, allCharacters, handleSetCharacterNFT, mintCharacterNFTAction } = useGameContract({
+  const {
+    boss,
+    attackState,
+    runAttackAction,
+    characterNFT,
+    allCharacters,
+    handleSetCharacterNFT,
+    mintCharacterNFTAction,
+  } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
 
@@ -35,7 +43,12 @@ const Page: React.VFC<Props> = ({}) => {
       <Layout>
         <div className="flex items-center">
           {characterNFT ? (
-            <Arena characterNFT={characterNFT} boss={boss} />
+            <Arena
+              characterNFT={characterNFT}
+              boss={boss}
+              attackState={attackState}
+              runAttackAction={runAttackAction}
+            />
           ) : (
             <SelectCharacter
               handleSetCharacterNFT={handleSetCharacterNFT}

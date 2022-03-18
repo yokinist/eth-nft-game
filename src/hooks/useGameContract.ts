@@ -12,11 +12,14 @@ type Props = {
   enable: boolean;
 };
 
+type AttackState = 'attacking' | 'hit' | '';
 type ReturnUseWaveContract = {
   mining: boolean;
+  attackState: AttackState;
   boss: FormattedCharacterType;
   allCharacters: FormattedCharacterType[];
   characterNFT: FormattedCharacterType;
+  runAttackAction: () => void;
   mintCharacterNFTAction: (characterId: number) => void;
   handleSetCharacterNFT: (nextVal: FormattedCharacterType) => void;
 };
@@ -25,6 +28,8 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   const [boss, setBoss] = useState<FormattedCharacterType>(null);
   const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
+
+  const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('');
 
   const [mining, setMining] = useState<boolean>(false);
   const ethereum = getEthereumSafety();
@@ -57,6 +62,21 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     },
     [gameContract],
   );
+
+  const runAttackAction = useCallback(async () => {
+    if (!gameContract) return;
+    try {
+      setAttackState('attacking');
+      console.info('Attacking boss...');
+      const attackTxn = await gameContract.attackBoss();
+      await attackTxn.wait();
+      console.info('attackTxn:', attackTxn);
+      setAttackState('hit');
+    } catch (error) {
+      console.error('Error attacking boss:', error);
+      setAttackState('');
+    }
+  }, [gameContract]);
 
   const getCharacters = useCallback(async (gameContract: ethers.Contract) => {
     if (!gameContract) return;
@@ -127,9 +147,11 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
 
   return {
     mining,
+    attackState,
     boss,
     allCharacters,
     characterNFT,
+    runAttackAction,
     mintCharacterNFTAction,
     handleSetCharacterNFT,
   };
