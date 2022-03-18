@@ -1,4 +1,4 @@
-import { SelectCharacter } from '@/components';
+import { Arena, SelectCharacter } from '@/components';
 import { useWallet, useGameContract } from '@/hooks';
 import { Button, Layout } from '@/shared';
 
@@ -9,7 +9,7 @@ type Props = {
 const Page: React.VFC<Props> = ({}) => {
   const { currentAccount, isRinkebyTestNetwork, connectWallet } = useWallet();
 
-  const { allCharacters, handleSetCharacterNFT, mintCharacterNFTAction } = useGameContract({
+  const { boss, characterNFT, allCharacters, handleSetCharacterNFT, mintCharacterNFTAction } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
 
@@ -21,27 +21,30 @@ const Page: React.VFC<Props> = ({}) => {
     );
   };
 
-  const renderSomethingAfterConnectWallet = () => {
+  if (!currentAccount) return <Layout>{renderSomethingBeforeConnectWallet()}</Layout>;
+
+  if (!isRinkebyTestNetwork)
     return (
-      <div className="flex items-center">
-        {!isRinkebyTestNetwork ? (
-          <p>Please Switch Rinkeby Test Network</p>
-        ) : (
-          <>
+      <Layout>
+        <p>Please Switch Rinkeby Test Network</p>
+      </Layout>
+    );
+
+  return (
+    <>
+      <Layout>
+        <div className="flex items-center">
+          {characterNFT ? (
+            <Arena characterNFT={characterNFT} boss={boss} />
+          ) : (
             <SelectCharacter
               handleSetCharacterNFT={handleSetCharacterNFT}
               allCharacters={allCharacters}
               mintCharacterNFTAction={mintCharacterNFTAction}
             />
-          </>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <>
-      <Layout>{currentAccount ? renderSomethingAfterConnectWallet() : renderSomethingBeforeConnectWallet()}</Layout>
+          )}
+        </div>
+      </Layout>
     </>
   );
 };

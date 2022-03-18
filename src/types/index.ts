@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { MetaMaskInpageProvider as MetaMaskInpageProviderType } from '@metamask/providers';
 
 export type EthereumType = MetaMaskInpageProviderType;
@@ -13,8 +14,7 @@ export type FormattedCharacterType = {
 export type CharacterType = {
   name: string;
   imageURI: string;
-  // #TODO: uint の type にする
-  hp: any;
-  maxHp: any;
-  attackDamage: any;
+  hp: BigNumber;
+  maxHp: BigNumber;
+  attackDamage: BigNumber;
 } | null;

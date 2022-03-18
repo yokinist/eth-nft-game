@@ -14,6 +14,7 @@ type Props = {
 
 type ReturnUseWaveContract = {
   mining: boolean;
+  boss: FormattedCharacterType;
   allCharacters: FormattedCharacterType[];
   characterNFT: FormattedCharacterType;
   mintCharacterNFTAction: (characterId: number) => void;
@@ -21,6 +22,7 @@ type ReturnUseWaveContract = {
 };
 
 export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
+  const [boss, setBoss] = useState<FormattedCharacterType>(null);
   const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
 
@@ -73,7 +75,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     }
   }, []);
 
-  // イベントを受信したときに起動するコールバックメソッド onCharacterMint を追加します。
+  // イベントを受信したときに起動するコールバックメソッド
   const onCharacterMint = useCallback(
     async (sender: any, tokenId: any, characterIndex: any) => {
       if (!gameContract) return;
@@ -105,10 +107,17 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     }
   }, []);
 
+  const fetchBoss = useCallback(async (gameContract: ethers.Contract) => {
+    const bossTxn = await gameContract.getBigBoss();
+    console.info('Boss:', bossTxn);
+    setBoss(formatCharacterData(bossTxn));
+  }, []);
+
   useEffect(() => {
     if (!gameContract || !enable) return;
     fetchNFTMetadata(gameContract);
     getCharacters(gameContract);
+    fetchBoss(gameContract);
     gameContract.on('CharacterNFTMinted', onCharacterMint);
     return () => {
       gameContract.off('CharacterNFTMinted', onCharacterMint);
@@ -117,8 +126,9 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   }, [gameContract, enable]);
 
   return {
-    allCharacters,
     mining,
+    boss,
+    allCharacters,
     characterNFT,
     mintCharacterNFTAction,
     handleSetCharacterNFT,
