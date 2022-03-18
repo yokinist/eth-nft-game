@@ -20,11 +20,10 @@ const Page: React.VFC<Props> = ({}) => {
     allCharacters,
     handleSetCharacterNFT,
     mintCharacterNFTAction,
+    giveBackCharacterNFT,
   } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
-
-  console.debug({ mining });
 
   const renderSomethingBeforeConnectWallet = () => {
     return (
@@ -62,6 +61,7 @@ const Page: React.VFC<Props> = ({}) => {
               boss={boss}
               attackState={attackState}
               runAttackAction={runAttackAction}
+              giveBackCharacterNFT={giveBackCharacterNFT}
             />
           ) : (
             <SelectCharacter

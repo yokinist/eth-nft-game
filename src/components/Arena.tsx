@@ -1,13 +1,20 @@
 import { IPFS_BASE_URL } from '@/constants';
 import { useGameContract } from '@/hooks';
-import { Spinner } from '@/shared';
+import { Button, Spinner } from '@/shared';
 
 type Props = Pick<
   ReturnType<typeof useGameContract>,
-  'characterNFT' | 'boss' | 'attackState' | 'runAttackAction' | 'showToast'
+  'characterNFT' | 'boss' | 'attackState' | 'runAttackAction' | 'showToast' | 'giveBackCharacterNFT'
 >;
 
-export const Arena: React.VFC<Props> = ({ boss, showToast, characterNFT, attackState, runAttackAction }) => {
+export const Arena: React.VFC<Props> = ({
+  boss,
+  showToast,
+  characterNFT,
+  attackState,
+  runAttackAction,
+  giveBackCharacterNFT,
+}) => {
   return (
     <div>
       {/* ボス */}
@@ -58,6 +65,9 @@ export const Arena: React.VFC<Props> = ({ boss, showToast, characterNFT, attackS
               <h4>{`⚔️ Attack Damage: ${characterNFT?.attackDamage}`}</h4>
             </div>
           </div>
+        </div>
+        <div className="mt-8">
+          <Button onClick={() => (characterNFT?.index ? giveBackCharacterNFT(characterNFT.index) : {})}>逃げる</Button>
         </div>
         {/* <div className="active-players">
           <h2>Active Players</h2>

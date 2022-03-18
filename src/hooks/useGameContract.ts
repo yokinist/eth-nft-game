@@ -25,6 +25,7 @@ type ReturnUseWaveContract = {
   characterNFT: FormattedCharacterType;
   runAttackAction: () => void;
   mintCharacterNFTAction: (characterId: number) => void;
+  giveBackCharacterNFT: (characterIndex: number) => void;
   handleSetCharacterNFT: (nextVal: FormattedCharacterType) => void;
 };
 
@@ -70,7 +71,22 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     [gameContract],
   );
 
-  const giveBackCharacterNFT = useCallback(() => {}, []);
+  const giveBackCharacterNFT = useCallback(
+    async (characterIndex: number) => {
+      if (!gameContract) return;
+      try {
+        console.info('Giveback character in progress....');
+        const mintTxn = await gameContract.givebackCharacterNFT(characterIndex);
+        setMining(true);
+        await mintTxn.wait();
+        console.info('mintTxn:', mintTxn);
+        setMining(false);
+      } catch (error) {
+        console.warn('MintCharacterAction Error:', error);
+      }
+    },
+    [gameContract],
+  );
 
   const runAttackAction = useCallback(async () => {
     if (!gameContract) return;
@@ -196,6 +212,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     characterNFT,
     runAttackAction,
     mintCharacterNFTAction,
+    giveBackCharacterNFT,
     handleSetCharacterNFT,
   };
 };
