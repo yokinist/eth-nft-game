@@ -53,10 +53,7 @@ contract EpicGame is ERC721 {
         string memory bossImageURI,
         uint bossHp,
         uint bossAttackDamage
-    )
-
-    ERC721("Pokemons", "POKEMON")
-    {
+    ) ERC721("Pokemons", "POKEMON") {
         bigBoss = BigBoss({
             name: bossName,
             imageURI: bossImageURI,
@@ -180,7 +177,6 @@ contract EpicGame is ERC721 {
     }
 
 
-    // === for frontend
     function checkIfUserHasNFT() public view returns (CharacterAttributes memory) {
         uint256 userNftTokenId = nftHolders[msg.sender];
 

@@ -63,9 +63,9 @@ export const useWallet = (): ReturnUseWallet => {
   useEffect(() => {
     if (!ethereum) return;
     checkIfWalletIsConnected();
-    ethereum.on('chainChanged', handleChainChanged);
+    ethereum?.on('chainChanged', handleChainChanged);
     return () => {
-      ethereum.off('chainChanged', handleChainChanged);
+      ethereum?.off('chainChanged', handleChainChanged);
     };
   }, [checkIfWalletIsConnected, ethereum]);
 

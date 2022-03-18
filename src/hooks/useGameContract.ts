@@ -1,0 +1,82 @@
+import { ethers } from 'ethers';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import EpicGameABI from '@/artifacts/contracts/EpicGame.sol/EpicGame.json';
+import { formatCharacterData } from '@/libs/formatCharacterData';
+import { CharacterType, FormattedCharacterType } from '@/types';
+import { getEthereumSafety } from '@/utils';
+
+const CONTRACT_ADDRESS = '0x5897AB265B7B6d1B79F240C0E50EeF677b9Cff4a';
+const CONTRACT_ABI = EpicGameABI.abi;
+
+type Props = {
+  enable: boolean;
+};
+
+type ReturnUseWaveContract = {
+  mining: boolean;
+  allCharacters: FormattedCharacterType[];
+  characterNFT: FormattedCharacterType;
+  handleSetCharacterNFT: (nextVal: FormattedCharacterType) => void;
+};
+
+export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
+  const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
+  const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
+
+  const [mining, setMining] = useState<boolean>(false);
+  const ethereum = getEthereumSafety();
+
+  const gameContract = useMemo(() => {
+    if (!ethereum) return null;
+    // #TODO: 型直す
+    // @ts-ignore: ethereum as ethers.providers.ExternalProvider
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  }, [ethereum]);
+
+  const handleSetCharacterNFT = (nextVal: typeof characterNFT) => {
+    setCharacterNFT(nextVal);
+  };
+
+  const getCharacters = useCallback(async (gameContract: ethers.Contract) => {
+    if (!gameContract) return;
+    try {
+      console.info('Getting contract characters to mint');
+      // ミント可能な全 NFT キャラクター をコントラクトをから呼ぶ
+      const charactersTxn: CharacterType[] = await gameContract.getAllDefaultCharacters();
+
+      console.info('charactersTxn:', charactersTxn);
+
+      const characters = charactersTxn.map((characterData) => formatCharacterData(characterData));
+
+      setAllCharacters(characters);
+    } catch (error) {
+      console.error('Something went wrong fetching characters:', error);
+    }
+  }, []);
+
+  const fetchNFTMetadata = useCallback(async (gameContract: ethers.Contract) => {
+    const txn = await gameContract.checkIfUserHasNFT();
+    if (txn.name) {
+      console.info('User has character NFT');
+      setCharacterNFT(formatCharacterData(txn));
+    } else {
+      console.info('No character NFT found');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!gameContract || !enable) return;
+    fetchNFTMetadata(gameContract);
+    getCharacters(gameContract);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameContract, enable]);
+
+  return {
+    allCharacters,
+    mining,
+    characterNFT,
+    handleSetCharacterNFT,
+  };
+};

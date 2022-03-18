@@ -1,4 +1,5 @@
-import { useWallet, useWaveContract } from '@/hooks';
+import { SelectCharacter } from '@/components';
+import { useWallet, useGameContract } from '@/hooks';
 import { Button, Layout } from '@/shared';
 
 type Props = {
@@ -8,7 +9,9 @@ type Props = {
 const Page: React.VFC<Props> = ({}) => {
   const { currentAccount, isRinkebyTestNetwork, connectWallet } = useWallet();
 
-  const { mining, handleWave, totalWaves } = useWaveContract({ enable: isRinkebyTestNetwork });
+  const { allCharacters, handleSetCharacterNFT } = useGameContract({
+    enable: !!(isRinkebyTestNetwork && currentAccount),
+  });
 
   const renderSomethingBeforeConnectWallet = () => {
     return (
@@ -25,12 +28,7 @@ const Page: React.VFC<Props> = ({}) => {
           <p>Please Switch Rinkeby Test Network</p>
         ) : (
           <>
-            <div className="mr-4">
-              <Button theme="primary" onClick={handleWave} disabled={mining}>
-                {mining ? 'mining...' : 'Wave 👋'}
-              </Button>
-            </div>
-            <div>total: {totalWaves} waves</div>
+            <SelectCharacter handleSetCharacterNFT={handleSetCharacterNFT} allCharacters={allCharacters} />
           </>
         )}
       </div>
