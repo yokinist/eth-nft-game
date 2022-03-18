@@ -8,7 +8,6 @@ type Props = Pick<
 >;
 
 export const Arena: React.VFC<Props> = ({ boss, showToast, characterNFT, attackState, runAttackAction }) => {
-  console.debug({ attackState });
   return (
     <div>
       {/* ボス */}

@@ -2,8 +2,9 @@ import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BigNumber } from '@ethersproject/bignumber';
 import EpicGameABI from '@/artifacts/contracts/EpicGame.sol/EpicGame.json';
+import { formatBossData } from '@/libs/formatBossData';
 import { formatCharacterData } from '@/libs/formatCharacterData';
-import { CharacterType, FormattedCharacterType } from '@/types';
+import { CharacterType, FormattedBossType, FormattedCharacterType } from '@/types';
 import { getEthereumSafety } from '@/utils';
 
 const CONTRACT_ADDRESS = '0xd253B93f927603b2Dabbbd253D626c04D0bdfd61';
@@ -19,7 +20,7 @@ type ReturnUseWaveContract = {
   mining: boolean;
   showToast: boolean;
   attackState: AttackState;
-  boss: FormattedCharacterType;
+  boss: FormattedBossType;
   allCharacters: FormattedCharacterType[];
   characterNFT: FormattedCharacterType;
   runAttackAction: () => void;
@@ -28,7 +29,7 @@ type ReturnUseWaveContract = {
 };
 
 export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
-  const [boss, setBoss] = useState<FormattedCharacterType>(null);
+  const [boss, setBoss] = useState<FormattedBossType>(null);
   const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
 
@@ -54,7 +55,6 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
 
   const mintCharacterNFTAction = useCallback(
     (characterId: number) => async () => {
-      console.debug({ characterId });
       if (!gameContract) return;
       try {
         console.info('Minting character in progress...');
@@ -69,6 +69,8 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     },
     [gameContract],
   );
+
+  const giveBackCharacterNFT = useCallback(() => {}, []);
 
   const runAttackAction = useCallback(async () => {
     if (!gameContract) return;
@@ -160,7 +162,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   const fetchBoss = useCallback(async (gameContract: ethers.Contract) => {
     const bossTxn = await gameContract.getBigBoss();
     console.info('Boss:', bossTxn);
-    setBoss(formatCharacterData(bossTxn));
+    setBoss(formatBossData(bossTxn));
   }, []);
 
   useEffect(() => {

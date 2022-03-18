@@ -42,6 +42,8 @@ contract EpicGame is ERC721 {
 
     event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
 
+    event CharacterNFTGiveBacked(address sender, uint256 tokenId, uint256 characterIndex);
+
     event AttackComplete(uint newBossHp, uint newPlayerHp);
 
     constructor(
@@ -104,6 +106,29 @@ contract EpicGame is ERC721 {
         emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
+    function givebackCharacterNFT(uint _characterIndex) external {
+        uint256 newItemId = _tokenIds.current();
+
+        // NFT を返還する
+        _safeMint(address(this), newItemId);
+
+        // mapping で定義した tokenId を CharacterAttributes に紐づける
+        nftHolderAttributes[newItemId] = CharacterAttributes({
+            characterIndex: _characterIndex,
+            name: defaultCharacters[_characterIndex].name,
+            imageURI: defaultCharacters[_characterIndex].imageURI,
+            hp: defaultCharacters[_characterIndex].hp,
+            maxHp: defaultCharacters[_characterIndex].maxHp,
+            attackDamage: defaultCharacters[_characterIndex].attackDamage
+        });
+
+        console.log("GiveBacked NFT w/ tokenId %s and characterIndex %s", newItemId, _characterIndex);
+
+        nftHolders[address(this)] = newItemId;
+
+        emit CharacterNFTGiveBacked(msg.sender, newItemId, _characterIndex);
+    }
+
     // nftHolderAttributes を更新して、tokenURI を添付する関数を作成
     function tokenURI(uint256 _tokenId) public view override returns (string memory) {
         CharacterAttributes memory charAttributes = nftHolderAttributes[_tokenId];
@@ -133,7 +158,6 @@ contract EpicGame is ERC721 {
         );
         return output;
     }
-
 
     function attackBoss() public {
         // 1. プレイヤーのNFTの状態を取得します。
