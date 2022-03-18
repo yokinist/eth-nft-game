@@ -16,11 +16,11 @@ const main = async () => {
   txn = await gameContract.mintCharacterNFT(2);
   await txn.wait();
 
-  // 1回目の攻撃: attackBoss 関数を追加
+  // 1回目の攻撃
   txn = await gameContract.attackBoss();
   await txn.wait();
 
-  // 2回目の攻撃: attackBoss 関数を追加
+  // 2回目の攻撃
   txn = await gameContract.attackBoss();
   await txn.wait();
 

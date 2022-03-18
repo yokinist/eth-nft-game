@@ -40,6 +40,10 @@ contract EpicGame is ERC721 {
     // ユーザーのアドレス / NFT の tokenId
     mapping(address => uint256) public nftHolders;
 
+    event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+
+    event AttackComplete(uint newBossHp, uint newPlayerHp);
+
     constructor(
         string[] memory characterNames,
         string[] memory characterImageURIs,
@@ -99,6 +103,8 @@ contract EpicGame is ERC721 {
         nftHolders[msg.sender] = newItemId;
 
         _tokenIds.increment();
+
+        emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
     }
 
     // nftHolderAttributes を更新して、tokenURI を添付する関数を作成
@@ -169,7 +175,32 @@ contract EpicGame is ERC721 {
 
         // ボスの攻撃をターミナルに出力
         console.log("Boss attacked player. New player hp: %s\n", player.hp);
+
+        emit AttackComplete(bigBoss.hp, player.hp);
     }
 
+
+    // === for frontend
+    function checkIfUserHasNFT() public view returns (CharacterAttributes memory) {
+        uint256 userNftTokenId = nftHolders[msg.sender];
+
+        // ユーザーがすでにtokenIdを持っていたら、そのキャラクターの属性情報を返す
+        if (userNftTokenId > 0) {
+            return nftHolderAttributes[userNftTokenId];
+        }
+        // なければ空文字を返す
+        else {
+            CharacterAttributes memory emptyStruct;
+            return emptyStruct;
+        }
+    }
+
+    function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
+        return defaultCharacters;
+    }
+
+    function getBigBoss() public view returns (BigBoss memory) {
+        return bigBoss;
+    }
 
 }
