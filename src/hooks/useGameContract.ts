@@ -1,11 +1,12 @@
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { BigNumber } from '@ethersproject/bignumber';
 import EpicGameABI from '@/artifacts/contracts/EpicGame.sol/EpicGame.json';
 import { formatCharacterData } from '@/libs/formatCharacterData';
 import { CharacterType, FormattedCharacterType } from '@/types';
 import { getEthereumSafety } from '@/utils';
 
-const CONTRACT_ADDRESS = '0x5897AB265B7B6d1B79F240C0E50EeF677b9Cff4a';
+const CONTRACT_ADDRESS = '0xd253B93f927603b2Dabbbd253D626c04D0bdfd61';
 const CONTRACT_ABI = EpicGameABI.abi;
 
 type Props = {
@@ -95,6 +96,23 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     }
   }, []);
 
+  // 攻撃完了したら起動するコールバック
+  const onAttackComplete = (newBossHp: BigNumber, newPlayerHp: BigNumber) => {
+    const bossHp = newBossHp.toNumber();
+    const playerHp = newPlayerHp.toNumber();
+    console.info(`AttackComplete: Boss Hp: ${bossHp} Player Hp: ${playerHp}`);
+
+    setBoss((prevState) => {
+      if (!prevState) return null;
+      return { ...prevState, hp: bossHp };
+    });
+
+    setCharacterNFT((prevState) => {
+      if (!prevState) return null;
+      return { ...prevState, hp: playerHp };
+    });
+  };
+
   // イベントを受信したときに起動するコールバックメソッド
   const onCharacterMint = useCallback(
     async (sender: any, tokenId: any, characterIndex: any) => {
@@ -132,6 +150,14 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     console.info('Boss:', bossTxn);
     setBoss(formatCharacterData(bossTxn));
   }, []);
+
+  useEffect(() => {
+    if (!gameContract || !enable || !characterNFT) return;
+    gameContract.on('AttackComplete', onAttackComplete);
+    return () => {
+      gameContract.off('AttackComplete', onAttackComplete);
+    };
+  }, [gameContract, enable, characterNFT]);
 
   useEffect(() => {
     if (!gameContract || !enable) return;
