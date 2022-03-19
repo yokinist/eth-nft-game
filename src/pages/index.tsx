@@ -62,11 +62,13 @@ const Page: React.VFC<Props> = ({}) => {
               attackState={attackState}
               runAttackAction={runAttackAction}
               giveBackCharacterNFT={giveBackCharacterNFT}
+              allCharacters={allCharacters}
+              mining={mining}
+              mintCharacterNFTAction={mintCharacterNFTAction}
             />
           ) : (
             <SelectCharacter
               mining={mining}
-              handleSetCharacterNFT={handleSetCharacterNFT}
               allCharacters={allCharacters}
               mintCharacterNFTAction={mintCharacterNFTAction}
             />

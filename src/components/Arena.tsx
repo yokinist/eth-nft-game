@@ -1,20 +1,38 @@
+import { useMemo } from 'react';
+import { SelectCharacter } from '.';
 import { IPFS_BASE_URL } from '@/constants';
 import { useGameContract } from '@/hooks';
 import { Button, Spinner } from '@/shared';
+import { FormattedCharacterType } from '@/types';
 
 type Props = Pick<
   ReturnType<typeof useGameContract>,
-  'characterNFT' | 'boss' | 'attackState' | 'runAttackAction' | 'showToast' | 'giveBackCharacterNFT'
+  | 'characterNFT'
+  | 'boss'
+  | 'attackState'
+  | 'runAttackAction'
+  | 'showToast'
+  | 'giveBackCharacterNFT'
+  | 'allCharacters'
+  | 'mining'
+  | 'mintCharacterNFTAction'
 >;
 
 export const Arena: React.VFC<Props> = ({
+  mining,
   boss,
   showToast,
+  allCharacters,
   characterNFT,
   attackState,
   runAttackAction,
   giveBackCharacterNFT,
+  mintCharacterNFTAction,
 }) => {
+  const otherCharacters: FormattedCharacterType[] = useMemo(() => {
+    if (!allCharacters.length) return [];
+    return allCharacters.filter((character) => character?.index !== characterNFT?.index);
+  }, [allCharacters, characterNFT?.index]);
   return (
     <div>
       {/* ボス */}
@@ -69,10 +87,16 @@ export const Arena: React.VFC<Props> = ({
         <div className="mt-8">
           <Button onClick={() => (characterNFT?.index ? giveBackCharacterNFT(characterNFT.index) : {})}>逃げる</Button>
         </div>
-        {/* <div className="active-players">
+        <div className="active-players">
           <h2>Active Players</h2>
-          <div className="players-list">{renderActivePlayersList()}</div>
-        </div> */}
+          <div className="players-list">
+            <SelectCharacter
+              mining={mining}
+              allCharacters={otherCharacters}
+              mintCharacterNFTAction={mintCharacterNFTAction}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

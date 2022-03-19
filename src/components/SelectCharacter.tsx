@@ -2,10 +2,7 @@ import { IPFS_BASE_URL } from '@/constants';
 import { useGameContract } from '@/hooks';
 import { Spinner } from '@/shared';
 
-type Props = Pick<
-  ReturnType<typeof useGameContract>,
-  'allCharacters' | 'handleSetCharacterNFT' | 'mintCharacterNFTAction' | 'mining'
->;
+type Props = Pick<ReturnType<typeof useGameContract>, 'allCharacters' | 'mintCharacterNFTAction' | 'mining'>;
 
 export const SelectCharacter: React.VFC<Props> = ({ mining, allCharacters, mintCharacterNFTAction }) => {
   const renderCharacters = () =>
