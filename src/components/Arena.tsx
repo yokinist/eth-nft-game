@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Character, SelectCharacter } from '.';
 import { useGameContract } from '@/hooks';
-import { Spinner } from '@/shared';
 import { FormattedCharacterType } from '@/types';
 
 type Props = Pick<
@@ -10,8 +10,8 @@ type Props = Pick<
   | 'boss'
   | 'attackState'
   | 'runAttackAction'
+  | 'healCharacterHP'
   | 'showToast'
-  | 'giveBackCharacterNFT'
   | 'allCharacters'
   | 'mining'
   | 'mintCharacterNFTAction'
@@ -24,8 +24,8 @@ export const Arena: React.VFC<Props> = ({
   allCharacters,
   characterNFT,
   attackState,
+  healCharacterHP,
   runAttackAction,
-  giveBackCharacterNFT,
   mintCharacterNFTAction,
 }) => {
   const [isShowCharacters, setIsShowCharacters] = useState<boolean>(false);
@@ -34,6 +34,7 @@ export const Arena: React.VFC<Props> = ({
     if (!allCharacters.length) return [];
     return allCharacters.filter((character) => character?.index !== characterNFT?.index);
   }, [allCharacters, characterNFT?.index]);
+
   return (
     <div className="w-full">
       {boss && characterNFT && (
@@ -50,17 +51,26 @@ export const Arena: React.VFC<Props> = ({
       </div>
       <div className="flex w-full">
         {/* NFT キャラクター */}
-        <div className="w-full max-w-sm">
-          <div className="players-container w-full">{characterNFT && <Character character={characterNFT} />}</div>
-          <div className="flex">
-            <div className="attack-container mb-4 mr-4">
-              <button className="cta-button" onClick={runAttackAction}>
+        <div className="w-full">
+          <div className="players-container w-full max-w-sm">
+            {characterNFT && <Character character={characterNFT} />}
+          </div>
+          <div className="flex w-full">
+            <div className="attack-container mb-4 mr-4 flex flex-wrap">
+              <button className="cta-button m-2" onClick={runAttackAction}>
                 💥 攻撃する
               </button>
-            </div>
-            <div className="attack-container">
-              <button className="cta-button" onClick={() => setIsShowCharacters((prevState) => !prevState)}>
-                {isShowCharacters ? 'キャンセル' : ' 仲間を呼ぶ'}
+              <button className="cta-button m-2" onClick={healCharacterHP}>
+                🌿 回復する
+              </button>
+              <button className="cta-button m-2" onClick={() => setIsShowCharacters((prevState) => !prevState)}>
+                {isShowCharacters ? 'キャンセル' : '♻️ 交代する'}
+              </button>
+              <button
+                className="cta-button m-2"
+                onClick={() => toast('残念ながら実装されていません..😭', { icon: '🚧' })}
+              >
+                🏃‍♂️ 逃げる
               </button>
             </div>
           </div>
@@ -80,8 +90,13 @@ export const Arena: React.VFC<Props> = ({
           )}
           {attackState === 'attacking' && (
             <div className="loading-indicator">
-              <Spinner loading theme="inline" />
-              <p>Attacking...</p>
+              <img
+                alt="attacking"
+                src="https://media4.giphy.com/media/l0ExsgrTuACbtPaqQ/giphy.gif?cid=ecf05e476lon48nbj98mmuurecfeoqbxbe9cdjit2auk6h2q&rid=giphy.gif&ct=g"
+                className="w-56 h-56 rounded-full"
+                decoding="async"
+              />
+              <p className="text-color-object-empty pl-20 text-lg">攻撃中...</p>
             </div>
           )}
         </div>

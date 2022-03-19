@@ -16,11 +16,10 @@ const Page: React.VFC<Props> = ({}) => {
     boss,
     attackState,
     runAttackAction,
+    healCharacterHP,
     characterNFT,
     allCharacters,
-    handleSetCharacterNFT,
     mintCharacterNFTAction,
-    giveBackCharacterNFT,
   } = useGameContract({
     enable: !!(isRinkebyTestNetwork && currentAccount),
   });
@@ -61,10 +60,10 @@ const Page: React.VFC<Props> = ({}) => {
               boss={boss}
               attackState={attackState}
               runAttackAction={runAttackAction}
-              giveBackCharacterNFT={giveBackCharacterNFT}
               allCharacters={allCharacters}
               mining={mining}
               mintCharacterNFTAction={mintCharacterNFTAction}
+              healCharacterHP={healCharacterHP}
             />
           ) : (
             <SelectCharacter

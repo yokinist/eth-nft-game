@@ -7,7 +7,7 @@ import { formatCharacterData } from '@/libs/formatCharacterData';
 import { CharacterType, FormattedBossType, FormattedCharacterType } from '@/types';
 import { getEthereumSafety } from '@/utils';
 
-const CONTRACT_ADDRESS = '0xDB24e545a5B4f3718085c463451162D973cdaD06';
+const CONTRACT_ADDRESS = '0x35168F7777ec08a8d65601646Db34fB15b9aF30C';
 const CONTRACT_ABI = EpicGameABI.abi;
 
 type Props = {
@@ -24,9 +24,8 @@ type ReturnUseWaveContract = {
   allCharacters: FormattedCharacterType[];
   characterNFT: FormattedCharacterType | null;
   runAttackAction: () => void;
+  healCharacterHP: () => void;
   mintCharacterNFTAction: (characterId: number) => void;
-  giveBackCharacterNFT: (characterIndex: number) => void;
-  handleSetCharacterNFT: (nextVal: FormattedCharacterType) => void;
 };
 
 export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
@@ -50,10 +49,6 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
   }, [ethereum]);
 
-  const handleSetCharacterNFT = (nextVal: typeof characterNFT) => {
-    setCharacterNFT(nextVal);
-  };
-
   const mintCharacterNFTAction = useCallback(
     (characterId: number) => async () => {
       if (!gameContract) return;
@@ -71,29 +66,26 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     [gameContract],
   );
 
-  const giveBackCharacterNFT = useCallback(
-    async (characterIndex: number) => {
-      if (!gameContract) return;
-      try {
-        console.info('Giveback character in progress....');
-        const mintTxn = await gameContract.givebackCharacterNFT(characterIndex);
-        setMining(true);
-        await mintTxn.wait();
-        console.info('mintTxn:', mintTxn);
-        setMining(false);
-      } catch (error) {
-        console.warn('MintCharacterAction Error:', error);
-      }
-    },
-    [gameContract],
-  );
+  const healCharacterHP = useCallback(async () => {
+    if (!gameContract) return;
+    try {
+      console.info('Giveback character in progress....');
+      const mintTxn = await gameContract.healHP();
+      setMining(true);
+      await mintTxn.wait();
+      console.info('mintTxn:', mintTxn);
+      setMining(false);
+    } catch (error) {
+      console.warn('MintCharacterAction Error:', error);
+    }
+  }, [gameContract]);
 
   const runAttackAction = useCallback(async () => {
     if (!gameContract) return;
     try {
-      setAttackState('attacking');
       console.info('Attacking boss...');
       const attackTxn = await gameContract.attackBoss();
+      setAttackState('attacking');
       await attackTxn.wait();
       console.info('attackTxn:', attackTxn);
       setAttackState('hit');
@@ -127,6 +119,22 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
 
   // 攻撃完了したら起動するコールバック
   const onAttackComplete = (newBossHp: BigNumber, newPlayerHp: BigNumber) => {
+    const bossHp = newBossHp.toNumber();
+    const playerHp = newPlayerHp.toNumber();
+    console.info(`AttackComplete: Boss Hp: ${bossHp} Player Hp: ${playerHp}`);
+
+    setBoss((prevState) => {
+      if (!prevState) return null;
+      return { ...prevState, hp: bossHp };
+    });
+
+    setCharacterNFT((prevState) => {
+      if (!prevState) return null;
+      return { ...prevState, hp: playerHp };
+    });
+  };
+
+  const onHealComplete = (newBossHp: BigNumber, newPlayerHp: BigNumber) => {
     const bossHp = newBossHp.toNumber();
     const playerHp = newPlayerHp.toNumber();
     console.info(`AttackComplete: Boss Hp: ${bossHp} Player Hp: ${playerHp}`);
@@ -179,8 +187,10 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   useEffect(() => {
     if (!gameContract || !enable || !characterNFT) return;
     gameContract.on('AttackComplete', onAttackComplete);
+    gameContract.on('HealComplete', onHealComplete);
     return () => {
       gameContract.off('AttackComplete', onAttackComplete);
+      gameContract.off('HealComplete', onHealComplete);
     };
   }, [gameContract, enable, characterNFT]);
 
@@ -205,9 +215,8 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     boss,
     allCharacters,
     characterNFT,
+    healCharacterHP,
     runAttackAction,
     mintCharacterNFTAction,
-    giveBackCharacterNFT,
-    handleSetCharacterNFT,
   };
 };

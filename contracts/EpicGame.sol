@@ -27,6 +27,7 @@ contract EpicGame is ERC721 {
         uint maxHp;
         uint attackDamage;
     }
+
     BigBoss public bigBoss;
 
     using Counters for Counters.Counter;
@@ -42,9 +43,9 @@ contract EpicGame is ERC721 {
 
     event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
 
-    event CharacterNFTGiveBacked(address sender, uint256 tokenId, uint256 characterIndex);
-
     event AttackComplete(uint newBossHp, uint newPlayerHp);
+
+    event HealComplete(uint newBossHp, uint newPlayerHp);
 
     constructor(
         string[] memory characterNames,
@@ -104,29 +105,6 @@ contract EpicGame is ERC721 {
         _tokenIds.increment();
 
         emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
-    }
-
-    function givebackCharacterNFT(uint _characterIndex) external {
-        uint256 newItemId = _tokenIds.current();
-
-        // NFT を返還する
-        _safeMint(address(this), newItemId);
-
-        // mapping で定義した tokenId を CharacterAttributes に紐づける
-        nftHolderAttributes[newItemId] = CharacterAttributes({
-            characterIndex: _characterIndex,
-            name: defaultCharacters[_characterIndex].name,
-            imageURI: defaultCharacters[_characterIndex].imageURI,
-            hp: defaultCharacters[_characterIndex].hp,
-            maxHp: defaultCharacters[_characterIndex].maxHp,
-            attackDamage: defaultCharacters[_characterIndex].attackDamage
-        });
-
-        console.log("GiveBacked NFT w/ tokenId %s and characterIndex %s", newItemId, _characterIndex);
-
-        nftHolders[address(this)] = newItemId;
-
-        emit CharacterNFTGiveBacked(msg.sender, newItemId, _characterIndex);
     }
 
     // nftHolderAttributes を更新して、tokenURI を添付する関数を作成
@@ -199,6 +177,22 @@ contract EpicGame is ERC721 {
         console.log("Boss attacked player. New player hp: %s\n", player.hp);
 
         emit AttackComplete(bigBoss.hp, player.hp);
+    }
+
+    function healHP() public {
+        uint256 nftTokenIdOfPlayer = nftHolders[msg.sender];
+        uint newPlayerHP;
+        CharacterAttributes storage player = nftHolderAttributes[nftTokenIdOfPlayer];
+
+        newPlayerHP = player.hp + player.attackDamage * 3;
+
+        if (newPlayerHP > player.maxHp) {
+            player.hp = player.maxHp;
+        } else {
+            player.hp = newPlayerHP;
+        }
+
+        emit HealComplete(bigBoss.hp, player.hp);
     }
 
 

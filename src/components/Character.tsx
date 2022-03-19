@@ -24,7 +24,7 @@ export const Character: React.VFC<Props> = ({ mintCharacterNFTAction, character,
       {mintCharacterNFTAction && 'index' in character ? (
         //  @ts-ignore
         <button type="button" className="character-mint-button" onClick={mintCharacterNFTAction(character.index)}>
-          {type === 'new' ? '君に決めた' : '仲間に加える'}
+          {type === 'new' ? '君に決めた' : '交代する'}
         </button>
       ) : (
         <div className="relative">

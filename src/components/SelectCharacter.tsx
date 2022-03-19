@@ -23,9 +23,9 @@ export const SelectCharacter: React.VFC<Props> = ({ type = 'new', mining, allCha
           <img
             src="https://media3.giphy.com/media/38niYp6E83GwM/giphy.gif?cid=ecf05e472ik1qhtc9zgpg3gpcuegk9mmzmzj3uyqxsfamui4&rid=giphy.gif&ct=g"
             alt="Minting loading indicator"
-            className="mb-4"
+            className="mb-4 border-2 solid border-color-object-white rounded"
           />
-          <p className="text-color-object-white font-bold">召喚中...</p>
+          <p className="text-color-object-white font-bold text-lg">召喚中...</p>
         </div>
       ) : (
         <>{allCharacters.length && <div className="character-grid">{renderCharacters()}</div>}</>
