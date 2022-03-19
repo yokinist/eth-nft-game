@@ -1,7 +1,6 @@
 import { BossType, FormattedBossType } from '@/types';
 
 export const formatBossData = (bossData: BossType): FormattedBossType => {
-  if (!bossData) return null;
   return {
     name: bossData.name,
     imageURI: bossData.imageURI,
