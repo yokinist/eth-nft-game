@@ -5,10 +5,11 @@ import { FormattedBossType, FormattedCharacterType } from '@/types';
 
 type Props = {
   character: FormattedCharacterType | FormattedBossType;
+  type?: 'join' | 'new';
   mintCharacterNFTAction?: ReturnType<typeof useGameContract>['mintCharacterNFTAction'];
 };
 
-export const Character: React.VFC<Props> = ({ mintCharacterNFTAction, character }) => {
+export const Character: React.VFC<Props> = ({ mintCharacterNFTAction, character, type = 'new' }) => {
   return (
     <div className="character-item">
       <div
@@ -23,7 +24,7 @@ export const Character: React.VFC<Props> = ({ mintCharacterNFTAction, character 
       {mintCharacterNFTAction && 'index' in character ? (
         //  @ts-ignore
         <button type="button" className="character-mint-button" onClick={mintCharacterNFTAction(character.index)}>
-          君に決めた
+          {type === 'new' ? '君に決めた' : '仲間に加える'}
         </button>
       ) : (
         <div className="relative">

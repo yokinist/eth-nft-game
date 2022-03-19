@@ -1,16 +1,23 @@
 import { Character } from '.';
 import { useGameContract } from '@/hooks';
 
-type Props = Pick<ReturnType<typeof useGameContract>, 'allCharacters' | 'mintCharacterNFTAction' | 'mining'>;
+type Props = Pick<ReturnType<typeof useGameContract>, 'allCharacters' | 'mintCharacterNFTAction' | 'mining'> & {
+  type?: 'join' | 'new';
+};
 
-export const SelectCharacter: React.VFC<Props> = ({ mining, allCharacters, mintCharacterNFTAction }) => {
+export const SelectCharacter: React.VFC<Props> = ({ type = 'new', mining, allCharacters, mintCharacterNFTAction }) => {
   const renderCharacters = () =>
     allCharacters.map((character) => (
-      <Character key={character.index} mintCharacterNFTAction={mintCharacterNFTAction} character={character} />
+      <Character
+        key={character.index}
+        mintCharacterNFTAction={mintCharacterNFTAction}
+        character={character}
+        type={type}
+      />
     ));
   return (
     <div className="select-character-container mt-12">
-      <h2 className="mb-16">一緒に戦う NFT キャラクターを選択</h2>
+      {type === 'new' && <h2 className="mb-16">一緒に戦う NFT キャラクターを選択</h2>}
       {mining ? (
         <div className="loading">
           <img
