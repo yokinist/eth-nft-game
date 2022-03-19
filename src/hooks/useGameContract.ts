@@ -18,6 +18,7 @@ type AttackState = 'attacking' | 'hit' | '';
 type ReturnUseWaveContract = {
   isLoading: boolean;
   mining: boolean;
+  healing: boolean;
   showToast: boolean;
   attackState: AttackState;
   boss: FormattedBossType | null;
@@ -38,6 +39,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mining, setMining] = useState<boolean>(false);
+  const [healing, setHealing] = useState<boolean>(false);
   const ethereum = getEthereumSafety();
 
   const gameContract = useMemo(() => {
@@ -71,10 +73,10 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
     try {
       console.info('Giveback character in progress....');
       const mintTxn = await gameContract.healHP();
-      setMining(true);
+      setHealing(true);
       await mintTxn.wait();
       console.info('mintTxn:', mintTxn);
-      setMining(false);
+      setHealing(false);
     } catch (error) {
       console.warn('MintCharacterAction Error:', error);
     }
@@ -210,6 +212,7 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
   return {
     isLoading,
     mining,
+    healing,
     showToast,
     attackState,
     boss,

@@ -14,11 +14,13 @@ type Props = Pick<
   | 'showToast'
   | 'allCharacters'
   | 'mining'
+  | 'healing'
   | 'mintCharacterNFTAction'
 >;
 
 export const Arena: React.VFC<Props> = ({
   mining,
+  healing,
   boss,
   showToast,
   allCharacters,
@@ -97,6 +99,17 @@ export const Arena: React.VFC<Props> = ({
                 decoding="async"
               />
               <p className="text-color-object-empty pl-20 text-lg">攻撃中...</p>
+            </div>
+          )}
+          {healing && (
+            <div className="loading-indicator">
+              <img
+                alt="healing"
+                src="https://media3.giphy.com/media/1FqyIw2lMKT2U/giphy.gif?cid=ecf05e47l77l27zo6ue2b28optsmzmiyol163nt75ct54m86&rid=giphy.gif&ct=g"
+                className="w-56 h-56 rounded-full object-cover"
+                decoding="async"
+              />
+              <p className="text-color-object-empty pl-20 text-lg">回復中...</p>
             </div>
           )}
         </div>

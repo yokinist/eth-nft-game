@@ -12,6 +12,7 @@ const Page: React.VFC<Props> = ({}) => {
   const {
     isLoading,
     mining,
+    healing,
     showToast,
     boss,
     attackState,
@@ -62,6 +63,7 @@ const Page: React.VFC<Props> = ({}) => {
               runAttackAction={runAttackAction}
               allCharacters={allCharacters}
               mining={mining}
+              healing={healing}
               mintCharacterNFTAction={mintCharacterNFTAction}
               healCharacterHP={healCharacterHP}
             />
