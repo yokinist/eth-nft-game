@@ -9,7 +9,7 @@ export type FormattedBossType = {
   hp: number;
   maxHp: number;
   attackDamage: number;
-} | null;
+};
 
 export type FormattedCharacterType = {
   index: number;
@@ -18,7 +18,7 @@ export type FormattedCharacterType = {
   hp: number;
   maxHp: number;
   attackDamage: number;
-} | null;
+};
 
 export type CharacterType = {
   characterIndex: BigNumber;
@@ -27,7 +27,7 @@ export type CharacterType = {
   hp: BigNumber;
   maxHp: BigNumber;
   attackDamage: BigNumber;
-} | null;
+};
 
 export type BossType = {
   name: string;
@@ -35,4 +35,4 @@ export type BossType = {
   hp: BigNumber;
   maxHp: BigNumber;
   attackDamage: BigNumber;
-} | null;
+};

@@ -7,7 +7,7 @@ import { formatCharacterData } from '@/libs/formatCharacterData';
 import { CharacterType, FormattedBossType, FormattedCharacterType } from '@/types';
 import { getEthereumSafety } from '@/utils';
 
-const CONTRACT_ADDRESS = '0xd253B93f927603b2Dabbbd253D626c04D0bdfd61';
+const CONTRACT_ADDRESS = '0xDB24e545a5B4f3718085c463451162D973cdaD06';
 const CONTRACT_ABI = EpicGameABI.abi;
 
 type Props = {
@@ -20,9 +20,9 @@ type ReturnUseWaveContract = {
   mining: boolean;
   showToast: boolean;
   attackState: AttackState;
-  boss: FormattedBossType;
+  boss: FormattedBossType | null;
   allCharacters: FormattedCharacterType[];
-  characterNFT: FormattedCharacterType;
+  characterNFT: FormattedCharacterType | null;
   runAttackAction: () => void;
   mintCharacterNFTAction: (characterId: number) => void;
   giveBackCharacterNFT: (characterIndex: number) => void;
@@ -30,8 +30,8 @@ type ReturnUseWaveContract = {
 };
 
 export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
-  const [boss, setBoss] = useState<FormattedBossType>(null);
-  const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType>(null);
+  const [boss, setBoss] = useState<FormattedBossType | null>(null);
+  const [characterNFT, setCharacterNFT] = useState<FormattedCharacterType | null>(null);
   const [allCharacters, setAllCharacters] = useState<FormattedCharacterType[]>([]);
 
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -155,11 +155,6 @@ export const useGameContract = ({ enable }: Props): ReturnUseWaveContract => {
       const characterNFT = await gameContract.checkIfUserHasNFT();
       console.info('CharacterNFT: ', characterNFT);
       setCharacterNFT(formatCharacterData(characterNFT));
-      alert(
-        `NFT キャラクーが Mint されました -- リンクはこちらです: https://rinkeby.rarible.com/token/${
-          gameContract.address
-        }:${tokenId.toNumber()}?tab=details`,
-      );
     },
     [gameContract],
   );

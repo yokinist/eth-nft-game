@@ -51,7 +51,7 @@ const Page: React.VFC<Props> = ({}) => {
   }
 
   return (
-    <>
+    <div className="bg-color-object-secondary h-screen">
       <Layout>
         <div className="flex items-center">
           {characterNFT ? (
@@ -75,7 +75,7 @@ const Page: React.VFC<Props> = ({}) => {
           )}
         </div>
       </Layout>
-    </>
+    </div>
   );
 };
 

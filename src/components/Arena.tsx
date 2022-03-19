@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { SelectCharacter } from '.';
-import { IPFS_BASE_URL } from '@/constants';
+import { Character, SelectCharacter } from '.';
 import { useGameContract } from '@/hooks';
 import { Button, Spinner } from '@/shared';
 import { FormattedCharacterType } from '@/types';
@@ -43,16 +42,7 @@ export const Arena: React.VFC<Props> = ({
       )}
       {boss && (
         <div className="boss-container">
-          <div className={`boss-content ${attackState}`}>
-            <h2>🔥 {boss.name} 🔥</h2>
-            <div className="image-content">
-              <img src={`${IPFS_BASE_URL}/${boss.imageURI}`} alt={`Boss ${boss.name}`} />
-              <div className="health-bar">
-                <progress value={boss.hp} max={boss.maxHp} />
-                <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
-              </div>
-            </div>
-          </div>
+          <div className={`boss-content ${attackState}`}>{boss && <Character character={boss} />}</div>
           <div className="attack-container">
             <button className="cta-button" onClick={runAttackAction}>
               {`💥 Attack ${boss.name}`}
@@ -68,22 +58,7 @@ export const Arena: React.VFC<Props> = ({
       )}
       {/* NFT キャラクター */}
       <div className="players-container">
-        <div className="player-container">
-          <h2>Your Character</h2>
-          <div className="player">
-            <div className="image-content">
-              <h2>{characterNFT?.name}</h2>
-              <img src={`${IPFS_BASE_URL}/${characterNFT?.imageURI}`} alt={`Character ${characterNFT?.name}`} />
-              <div className="health-bar">
-                <progress value={characterNFT?.hp} max={characterNFT?.maxHp} />
-                <p>{`${characterNFT?.hp} / ${characterNFT?.maxHp} HP`}</p>
-              </div>
-            </div>
-            <div className="stats">
-              <h4>{`⚔️ Attack Damage: ${characterNFT?.attackDamage}`}</h4>
-            </div>
-          </div>
-        </div>
+        {characterNFT && <Character character={characterNFT} />}
         <div className="mt-8">
           <Button onClick={() => (characterNFT?.index ? giveBackCharacterNFT(characterNFT.index) : {})}>逃げる</Button>
         </div>
